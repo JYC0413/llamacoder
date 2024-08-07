@@ -188,12 +188,12 @@ export default function Home() {
       <main className="mt-12 flex w-full flex-1 flex-col items-center px-4 text-center sm:mt-20">
         <a
           className="mb-4 inline-flex h-7 shrink-0 items-center gap-[9px] rounded-[50px] border-[0.5px] border-solid border-[#E6E6E6] bg-[rgba(234,238,255,0.65)] bg-gray-100 px-7 py-5 shadow-[0px_1px_1px_0px_rgba(0,0,0,0.25)]"
-          href="https://dub.sh/together-ai"
+          href="https://www.gaianet.ai/"
           target="_blank"
         >
           <span className="text-center">
             Powered by <span className="font-medium">Llama 3.1</span> and{" "}
-            <span className="font-medium">Together AI</span>
+            <span className="font-medium">GaiaNet</span>
           </span>
         </a>
         <h1 className="my-6 max-w-3xl text-4xl font-bold text-gray-800 sm:text-6xl">
@@ -231,7 +231,7 @@ export default function Home() {
               <p className="text-xs text-gray-500">Model:</p>
               <Select.Root
                 name="model"
-                defaultValue={process.env.NEXT_PUBLIC_LLAMAEDGE_MODEL_NAME}
+                defaultValue={process.env.NEXT_PUBLIC_LLAMAEDGE_MODEL_NAME || "llama"}
                 disabled={loading}
               >
                 <Select.Trigger className="group flex w-full max-w-xs items-center rounded-2xl border-[6px] border-gray-300 bg-white px-4 py-2 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500">
@@ -245,8 +245,8 @@ export default function Home() {
                     <Select.Viewport className="p-2">
                       {[
                         {
-                          label: process.env.NEXT_PUBLIC_LLAMAEDGE_MODEL_NAME,
-                          value: process.env.NEXT_PUBLIC_LLAMAEDGE_MODEL_NAME,
+                          label: process.env.NEXT_PUBLIC_LLAMAEDGE_MODEL_NAME || "llama",
+                          value: process.env.NEXT_PUBLIC_LLAMAEDGE_MODEL_NAME || "llama",
                         }
                       ].map((model) => (
                         <Select.Item

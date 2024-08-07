@@ -18,7 +18,9 @@ export async function TogetherAIStream(payload: TogetherAIStreamPayload) {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
 
-  let res = await fetch(process.env.LLAMAEDGE_BASE_URL + "/chat/completions", {
+  const url = process.env.LLAMAEDGE_BASE_URL || "https://llama.us.gaianet.network/v1"
+
+  let res = await fetch(url + "/chat/completions", {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${process.env.LLAMAEDGE_API_KEY ?? ""}`
