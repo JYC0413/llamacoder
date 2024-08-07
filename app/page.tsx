@@ -231,7 +231,7 @@ export default function Home() {
               <p className="text-xs text-gray-500">Model:</p>
               <Select.Root
                 name="model"
-                defaultValue="meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo"
+                defaultValue={process.env.NEXT_PUBLIC_LLAMAEDGE_MODEL_NAME}
                 disabled={loading}
               >
                 <Select.Trigger className="group flex w-full max-w-xs items-center rounded-2xl border-[6px] border-gray-300 bg-white px-4 py-2 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500">
@@ -245,18 +245,9 @@ export default function Home() {
                     <Select.Viewport className="p-2">
                       {[
                         {
-                          label: "Llama 3.1 405B",
-                          value:
-                            "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo",
-                        },
-                        {
-                          label: "Llama 3.1 70B",
-                          value: "meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo",
-                        },
-                        {
-                          label: "Gemma 2 27B",
-                          value: "google/gemma-2-27b-it",
-                        },
+                          label: process.env.NEXT_PUBLIC_LLAMAEDGE_MODEL_NAME,
+                          value: process.env.NEXT_PUBLIC_LLAMAEDGE_MODEL_NAME,
+                        }
                       ].map((model) => (
                         <Select.Item
                           key={model.value}
