@@ -31,7 +31,7 @@ export async function POST(req: Request) {
       ...messages.map((message: any) => {
         if (message.role === "user") {
           message.content +=
-            "\nPlease ONLY return code, NO backticks or language names.";
+            "\nPlease ONLY return code, NO backticks or language names.Please do not import any other files.";
         }
         return message;
       }),
