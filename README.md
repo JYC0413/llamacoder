@@ -11,6 +11,6 @@
 
 ## Cloning & running
 
-1. Clone the repo: `git clone https://github.com/JYC0413/llamacoder.git`
+1. Clone the repo: `git clone https://github.com/second-state/llamacoder.git`
 2. Create a `.env` file
 3. Run `npm install` and `npm run dev` to install dependencies and run locally
