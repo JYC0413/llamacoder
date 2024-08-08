@@ -458,7 +458,7 @@ export default function Home() {
                     showTabs: false
                   }}
                   files={files}
-                  template={frameworkUsedForInitialCode + (frameworkUsedForInitialCode !== "react" ? "" : "-ts")}
+                  template={frameworkUsedForInitialCode + (frameworkUsedForInitialCode !== "react" ? "" : "-ts") as "vanilla"}
                 />
               </div>
 
