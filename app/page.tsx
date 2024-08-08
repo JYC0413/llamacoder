@@ -78,7 +78,6 @@ export default function Home() {
       return;
     }
     const onParse = (event: ParsedEvent | ReconnectInterval) => {
-      console.log(event)
       if (event.type === "event") {
         const data = event.data;
         try {
@@ -189,7 +188,6 @@ export default function Home() {
   }, [loading, generatedCode]);
 
   let files = {}
-  console.log(generatedCode)
   if(frameworkUsedForInitialCode==="react") {
     files = {
       "App.tsx": generatedCode
@@ -215,7 +213,6 @@ export default function Home() {
       "index.html": generatedCode
     }
   }
-  console.log(files)
 
   return (
     <div className="mx-auto flex min-h-screen max-w-7xl flex-col items-center justify-center py-2">
