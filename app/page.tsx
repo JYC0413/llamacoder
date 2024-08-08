@@ -28,6 +28,7 @@ export default function Home() {
   >("initial");
   let [generatedCode, setGeneratedCode] = useState("");
   let [modelUsedForInitialCode, setModelUsedForInitialCode] = useState("");
+  let [frameworkUsedForInitialCode, setFrameworkUsedForInitialCode] = useState("");
   let [ref, scrollTo] = useScrollTo();
   let [messages, setMessages] = useState<{ role: string; content: string }[]>(
     [],
@@ -36,6 +37,7 @@ export default function Home() {
   let loading = status === "creating" || status === "updating";
 
   async function generateCode(e: FormEvent<HTMLFormElement>) {
+
     e.preventDefault();
 
     if (status !== "initial") {
@@ -47,10 +49,12 @@ export default function Home() {
 
     let formData = new FormData(e.currentTarget);
     let model = formData.get("model");
+    let framework = formData.get("framework");
     let prompt = formData.get("prompt");
-    if (typeof prompt !== "string" || typeof model !== "string") {
+    if (typeof prompt !== "string" || typeof model !== "string" || typeof framework !== "string") {
       return;
     }
+    setFrameworkUsedForInitialCode(framework);
     let newMessages = [{ role: "user", content: prompt }];
 
     const chatRes = await fetch("/api/generateCode", {
@@ -61,6 +65,7 @@ export default function Home() {
       body: JSON.stringify({
         messages: newMessages,
         model,
+        framework
       }),
     });
     if (!chatRes.ok) {
@@ -73,6 +78,7 @@ export default function Home() {
       return;
     }
     const onParse = (event: ParsedEvent | ReconnectInterval) => {
+      console.log(event)
       if (event.type === "event") {
         const data = event.data;
         try {
@@ -128,6 +134,7 @@ export default function Home() {
       body: JSON.stringify({
         messages: newMessages,
         model: modelUsedForInitialCode,
+        framework: frameworkUsedForInitialCode
       }),
     });
     if (!chatRes.ok) {
@@ -181,6 +188,35 @@ export default function Home() {
     }
   }, [loading, generatedCode]);
 
+  let files = {}
+  console.log(generatedCode)
+  if(frameworkUsedForInitialCode==="react") {
+    files = {
+      "App.tsx": generatedCode
+    }
+  }else if(frameworkUsedForInitialCode==="vue") {
+    files = {
+      "src/App.vue": generatedCode
+    }
+  }else if(frameworkUsedForInitialCode==="angular"){
+    files = {
+      "src/app/app.component.ts": generatedCode
+    }
+  }else if(frameworkUsedForInitialCode==="svelte"){
+    files = {
+      "/App.svelte": generatedCode
+    }
+  }else if(frameworkUsedForInitialCode==="nextjs"){
+    files = {
+      "pages/index.js": generatedCode
+    }
+  }else{
+    files = {
+      "index.html": generatedCode
+    }
+  }
+  console.log(files)
+
   return (
     <div className="mx-auto flex min-h-screen max-w-7xl flex-col items-center justify-center py-2">
       <Header />
@@ -227,50 +263,112 @@ export default function Home() {
                 </button>
               </div>
             </div>
-            <div className="mt-6 flex items-center justify-center gap-3">
-              <p className="text-xs text-gray-500">Model:</p>
-              <Select.Root
-                name="model"
-                defaultValue={process.env.NEXT_PUBLIC_LLAMAEDGE_MODEL_NAME || "llama"}
-                disabled={loading}
-              >
-                <Select.Trigger className="group flex w-full max-w-xs items-center rounded-2xl border-[6px] border-gray-300 bg-white px-4 py-2 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500">
-                  <Select.Value />
-                  <Select.Icon className="ml-auto">
-                    <ChevronDownIcon className="size-6 text-gray-300 group-focus-visible:text-gray-500 group-enabled:group-hover:text-gray-500" />
-                  </Select.Icon>
-                </Select.Trigger>
-                <Select.Portal>
-                  <Select.Content className="overflow-hidden rounded-md bg-white shadow-lg">
-                    <Select.Viewport className="p-2">
-                      {[
-                        {
-                          label: process.env.NEXT_PUBLIC_LLAMAEDGE_MODEL_NAME || "llama",
-                          value: process.env.NEXT_PUBLIC_LLAMAEDGE_MODEL_NAME || "llama",
-                        }
-                      ].map((model) => (
-                        <Select.Item
-                          key={model.value}
-                          value={model.value}
-                          className="flex cursor-pointer items-center rounded-md px-3 py-2 text-sm data-[highlighted]:bg-gray-100 data-[highlighted]:outline-none"
-                        >
-                          <Select.ItemText asChild>
+            <div className="flex justify-between">
+              {/*<input*/}
+              {/*  required*/}
+              {/*  name="baseURL"*/}
+              {/*  placeholder="enter your base url"*/}
+              {/*  defaultValue="https://llama.us.gaianet.network/v1"*/}
+              {/*/>*/}
+              <div className="mt-6 flex items-center justify-center gap-3">
+                <p className="text-xs text-gray-500">Model:</p>
+                <Select.Root
+                  name="model"
+                  defaultValue={process.env.NEXT_PUBLIC_LLAMAEDGE_MODEL_NAME || "llama"}
+                  disabled={loading}
+                >
+                  <Select.Trigger
+                    className="group flex w-full max-w-xs items-center rounded-2xl border-[6px] border-gray-300 bg-white px-4 py-2 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500">
+                    <Select.Value />
+                    <Select.Icon className="ml-auto">
+                      <ChevronDownIcon
+                        className="size-6 text-gray-300 group-focus-visible:text-gray-500 group-enabled:group-hover:text-gray-500" />
+                    </Select.Icon>
+                  </Select.Trigger>
+                  <Select.Portal>
+                    <Select.Content className="overflow-hidden rounded-md bg-white shadow-lg">
+                      <Select.Viewport className="p-2">
+                        {[
+                          {
+                            label: process.env.NEXT_PUBLIC_LLAMAEDGE_MODEL_NAME || "llama",
+                            value: process.env.NEXT_PUBLIC_LLAMAEDGE_MODEL_NAME || "llama"
+                          }
+                        ].map((model) => (
+                          <Select.Item
+                            key={model.value}
+                            value={model.value}
+                            className="flex cursor-pointer items-center rounded-md px-3 py-2 text-sm data-[highlighted]:bg-gray-100 data-[highlighted]:outline-none"
+                          >
+                            <Select.ItemText asChild>
                             <span className="inline-flex items-center gap-2 text-gray-500">
                               <div className="size-2 rounded-full bg-green-500" />
                               {model.label}
                             </span>
-                          </Select.ItemText>
-                          <Select.ItemIndicator className="ml-auto">
-                            <CheckIcon className="size-5 text-blue-600" />
-                          </Select.ItemIndicator>
-                        </Select.Item>
-                      ))}
-                    </Select.Viewport>
-                    <Select.ScrollDownButton />
-                    <Select.Arrow />
-                  </Select.Content>
-                </Select.Portal>
-              </Select.Root>
+                            </Select.ItemText>
+                            <Select.ItemIndicator className="ml-auto">
+                              <CheckIcon className="size-5 text-blue-600" />
+                            </Select.ItemIndicator>
+                          </Select.Item>
+                        ))}
+                      </Select.Viewport>
+                      <Select.ScrollDownButton />
+                      <Select.Arrow />
+                    </Select.Content>
+                  </Select.Portal>
+                </Select.Root>
+              </div>
+              <div className="mt-6 flex items-center justify-center gap-3">
+                <p className="text-xs text-gray-500">Framework:</p>
+                <Select.Root
+                  name="framework"
+                  defaultValue={"react"}
+                  disabled={loading}
+                >
+                  <Select.Trigger
+                    className="group flex w-full max-w-xs items-center rounded-2xl border-[6px] border-gray-300 bg-white px-4 py-2 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500">
+                    <Select.Value />
+                    <Select.Icon className="ml-auto">
+                      <ChevronDownIcon
+                        className="size-6 text-gray-300 group-focus-visible:text-gray-500 group-enabled:group-hover:text-gray-500" />
+                    </Select.Icon>
+                  </Select.Trigger>
+                  <Select.Portal>
+                    <Select.Content className="overflow-hidden rounded-md bg-white shadow-lg">
+                      <Select.Viewport className="p-2">
+                        {[
+                          {
+                            label: "React",
+                            value: "react"
+                          }, {
+                            label: "Vue",
+                            value: "vue"
+                          }, {
+                            label: "None",
+                            value: "static"
+                          }
+                        ].map((framework) => (
+                          <Select.Item
+                            key={framework.value}
+                            value={framework.value}
+                            className="flex cursor-pointer items-center rounded-md px-3 py-2 text-sm data-[highlighted]:bg-gray-100 data-[highlighted]:outline-none"
+                          >
+                            <Select.ItemText asChild>
+                            <span className="inline-flex items-center gap-2 text-gray-500">
+                              {framework.label}
+                            </span>
+                            </Select.ItemText>
+                            <Select.ItemIndicator className="ml-auto">
+                              <CheckIcon className="size-5 text-blue-600" />
+                            </Select.ItemIndicator>
+                          </Select.Item>
+                        ))}
+                      </Select.Viewport>
+                      <Select.ScrollDownButton />
+                      <Select.Arrow />
+                    </Select.Content>
+                  </Select.Portal>
+                </Select.Root>
+              </div>
             </div>
           </fieldset>
         </form>
@@ -283,7 +381,7 @@ export default function Home() {
             animate={{
               height: "auto",
               overflow: "hidden",
-              transitionEnd: { overflow: "visible" },
+              transitionEnd: { overflow: "visible" }
             }}
             transition={{ type: "spring", bounce: 0, duration: 0.5 }}
             className="w-full pb-[25vh] pt-10"
@@ -353,35 +451,14 @@ export default function Home() {
                 <Sandpack
                   theme={draculaTheme}
                   options={{
-                    showNavigator: true,
                     externalResources: [
-                      "https://unpkg.com/@tailwindcss/ui/dist/tailwind-ui.min.css",
+                      "https://unpkg.com/@tailwindcss/ui/dist/tailwind-ui.min.css"
                     ],
                     editorHeight: "80vh",
-                    showTabs: false,
+                    showTabs: false
                   }}
-                  files={{
-                    "App.tsx": generatedCode,
-                    "/public/index.html": `<!DOCTYPE html>
-                    <html lang="en">
-                      <head>
-                        <meta charset="UTF-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>Document</title>
-                        <script src="https://cdn.tailwindcss.com"></script>
-                      </head>
-                      <body>
-                        <div id="root"></div>
-                      </body>
-                    </html>`,
-                  }}
-                  template="react-ts"
-                  customSetup={{
-                    dependencies: {
-                      "lucide-react": "latest",
-                      recharts: "2.9.0",
-                    },
-                  }}
+                  files={files}
+                  template={frameworkUsedForInitialCode + (frameworkUsedForInitialCode !== "react" ? "" : "-ts")}
                 />
               </div>
 
