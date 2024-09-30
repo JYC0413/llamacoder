@@ -226,7 +226,7 @@ export default function Home() {
         >
           <span className="text-center">
             Powered by <span className="font-medium">Llama 3.1</span> and{" "}
-            <span className="font-medium">GaiaNet</span>
+            <span className="font-medium">Gaia</span>
           </span>
         </a>
         <h1 className="my-6 max-w-3xl text-4xl font-bold text-gray-800 sm:text-6xl">

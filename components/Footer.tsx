@@ -17,7 +17,7 @@ export default function Footer() {
             href="https://www.gaianet.ai/"
             className="font-semibold text-blue-600 underline-offset-4 transition hover:text-gray-700 hover:underline"
           >
-            GaiaNet
+            Gaia
           </a>
           .
         </div>

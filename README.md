@@ -5,7 +5,7 @@
 ## Tech stack
 
 - [Llama 3.1 8B](https://huggingface.co/gaianet/Meta-Llama-3.1-8B-Instruct-GGUF) from Meta for the LLM
-- [GaiaNet](https://www.gaianet.ai/) for LLM inference
+- [Gaia](https://www.gaianet.ai/) for LLM inference
 - [Sandpack](https://sandpack.codesandbox.io/) for the code sandbox
 - Next.js app router with Tailwind
 
