@@ -18,7 +18,7 @@ export async function TogetherAIStream(payload: TogetherAIStreamPayload) {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
 
-  const url = process.env.LLAMAEDGE_BASE_URL || "https://llama.us.gaianet.network/v1"
+  const url = process.env.LLAMAEDGE_BASE_URL || "https://llama8b.gaia.domains/v1"
 
   let res = await fetch(url + "/chat/completions", {
     headers: {
